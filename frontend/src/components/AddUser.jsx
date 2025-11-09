@@ -1,45 +1,29 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/users'; // đổi nếu backend khác
-
-export default function AddUser({ onUserAdded }) {
+const AddUser = ({ setUsers, API_URL }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) return alert("Name không được để trống");
-    if (!/\S+@\S+\.\S+/.test(email)) return alert("Email không hợp lệ");
-
+  const handleAdd = async () => {
+    if (!name || !email) return alert("Vui lòng nhập đầy đủ thông tin");
     try {
-      await axios.post(API_URL, { name, email });
+      const res = await axios.post(API_URL, { name, email });
+      setUsers(prev => [...prev, res.data.user]);
       setName('');
       setEmail('');
-      if (onUserAdded) onUserAdded(); // gọi lại fetchUsers ở App.js
     } catch (err) {
-      console.error('Lỗi khi thêm user:', err);
-      alert('Thêm user thất bại!');
+      console.error(err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
-      <input
-        type="text"
-        placeholder="Tên"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <button type="submit">Thêm</button>
-    </form>
+    <div style={{ marginBottom: '20px' }}>
+      <input placeholder="Tên" value={name} onChange={e => setName(e.target.value)} style={{ marginRight: '10px' }} />
+      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={{ marginRight: '10px' }} />
+      <button onClick={handleAdd}>Thêm</button>
+    </div>
   );
-}
+};
+
+export default AddUser;
