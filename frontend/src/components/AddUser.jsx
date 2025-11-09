@@ -1,9 +1,7 @@
-// src/components/AddUser.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.5:5000/api/users';
- // trùng với backend
+const API_URL = 'http://localhost:5000/api/users'; // đổi nếu backend khác
 
 export default function AddUser({ onUserAdded }) {
   const [name, setName] = useState('');
@@ -18,7 +16,7 @@ export default function AddUser({ onUserAdded }) {
       await axios.post(API_URL, { name, email });
       setName('');
       setEmail('');
-      if (onUserAdded) onUserAdded(); // cập nhật danh sách
+      if (onUserAdded) onUserAdded(); // gọi lại fetchUsers ở App.js
     } catch (err) {
       console.error('Lỗi khi thêm user:', err);
       alert('Thêm user thất bại!');
@@ -26,8 +24,7 @@ export default function AddUser({ onUserAdded }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
-      <h3>Thêm User</h3>
+    <form onSubmit={handleSubmit} style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
       <input
         type="text"
         placeholder="Tên"
